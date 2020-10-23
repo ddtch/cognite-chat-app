@@ -1,0 +1,32 @@
+:host{
+  display: block;
+  width: 100%;
+}
+.chat-wrapper{
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
+  margin-top: 60px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 12px 4px rgba(0,0,0,.2);
+
+  .chat-body{
+    display: flex;
+    height: 300px;
+    overflow-y: auto;
+
+    .messages{
+      display: flex;
+      flex-flow: column nowrap;
+      width: 70%;
+    }
+
+    app-chat-users-list{
+      display: flex;
+      width: 30%;
+    }
+  }
+}

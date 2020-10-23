@@ -1,0 +1,15 @@
+.users-holder{
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
+  border-left: 1px solid rgba(0,0,0,.05);
+  .user{
+    padding-left: 10px;
+    margin-bottom: 4px;
+    cursor: pointer;
+    width: 100%;
+    &:hover{
+      background: rgba(0,0,0,.05);
+    }
+  }
+}

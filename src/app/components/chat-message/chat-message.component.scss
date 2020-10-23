@@ -1,0 +1,15 @@
+.message{
+  display: flex;
+  &.mine{
+    flex-flow: row-reverse;
+    align-items: flex-end;
+    .author{
+      margin-right: 0;
+      margin-left: 5px;
+    }
+  }
+  .author{
+    color: gray;
+    margin-right: 5px;
+  }
+}

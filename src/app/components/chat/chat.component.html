@@ -1,0 +1,14 @@
+<div class="chat-wrapper">
+  <div class="chat-body">
+    <div class="messages">
+      <app-chat-message
+        [messages]="messages | async"
+        [activeUserId]="1">
+      </app-chat-message>
+    </div>
+    <app-chat-users-list [users]="users | async"
+      (userClicked)="onUserSelected($event)">
+    </app-chat-users-list>
+  </div>
+  <app-chat-message-form (messageSent)="onMessageSent($event)"></app-chat-message-form>
+</div>

@@ -1,0 +1,5 @@
+<div *ngFor="let m of messages" class="message"
+     [class.mine]="activeUserId === m.user.id">
+  <div class="author">{{m.user.name}}</div>
+  <div class="text">{{m.message}}</div>
+</div>
