@@ -1,14 +1,21 @@
 <div class="chat-wrapper">
   <div class="chat-body">
     <div class="messages">
-      <app-chat-message
+      <ng-container *ngIf="!selectedChatId">
+        Please select user to chat!
+      </ng-container>
+      <app-chat-message *ngIf="selectedChatId"
         [messages]="messages | async"
         [activeUserId]="1">
       </app-chat-message>
     </div>
-    <app-chat-users-list [users]="users | async"
-      (userClicked)="onUserSelected($event)">
-    </app-chat-users-list>
+
+    <app-chats-list [chats]="chats | async"
+                    [selectedChatId]="selectedChatId"
+                    (chatSelected)="onChatSelected($event)">
+    </app-chats-list>
   </div>
-  <app-chat-message-form (messageSent)="onMessageSent($event)"></app-chat-message-form>
+  <app-chat-message-form *ngIf="selectedChatId"
+                         (messageSent)="onMessageSent($event)">
+  </app-chat-message-form>
 </div>

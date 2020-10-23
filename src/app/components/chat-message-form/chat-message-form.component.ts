@@ -1,6 +1,4 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {MessageModel} from '../../models/MessageModel';
-import {UserModel} from '../../models/UserModel';
 
 @Component({
   selector: 'app-chat-message-form',

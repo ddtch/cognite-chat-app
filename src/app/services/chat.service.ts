@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, forkJoin, Observable, of, Subject} from 'rxjs';
-import {RoomModel} from '../models/RoomModel';
+import {BehaviorSubject, Observable, of} from 'rxjs';
 import {UserModel} from '../models/UserModel';
-import {MessageModel} from '../models/MessageModel';
 import {map} from 'rxjs/operators';
+import {ChatModel} from '../models/ChatModel';
+import {ChatMessageModel} from '../models/ChatMessageModel';
 
 const mockAuthUser: UserModel = {
   id: 1,
@@ -18,24 +18,41 @@ const mockUsers: UserModel[] = [
   {
     id: 3,
     name: 'John'
+  },
+  {
+    id: 4,
+    name: 'Adam'
   }
 ];
 
-const mockRooms: RoomModel[] = [
+const mockChats: ChatModel[] = [
   {
     id: 1,
-    title: 'common',
     messages: [
       {
-        user: mockUsers[0],
-        message: 'hi guys'
+        userId: mockUsers[0].id,
+        message: 'Hi Dave'
       },
       {
-        user: mockUsers[1],
-        message: 'yo man'
+        userId: mockAuthUser.id,
+        message: 'Hi man'
       }
     ],
-    users: [...mockUsers, mockAuthUser]
+    user: mockUsers[0]
+  },
+  {
+    id: 2,
+    messages: [
+      {
+        userId: mockUsers[1].id,
+        message: 'Hi there'
+      },
+      {
+        userId: mockAuthUser.id,
+        message: 'Yo'
+      }
+    ],
+    user: mockUsers[1]
   }
 ];
 
@@ -43,60 +60,38 @@ const mockRooms: RoomModel[] = [
   providedIn: 'root'
 })
 export class ChatService {
-  private connectedUserId: number;
-  private activeChatRoomId: BehaviorSubject<number> = new BehaviorSubject<number>(null);
-  private chatRooms: BehaviorSubject<RoomModel[]> = new BehaviorSubject<RoomModel[]>([]);
-  private activeRoom: BehaviorSubject<RoomModel> = new BehaviorSubject<RoomModel>(null);
-  public chatRooms$ = this.chatRooms.asObservable();
-  public activeRoom$ = this.activeRoom.asObservable();
+  private chats: BehaviorSubject<ChatModel[]> = new BehaviorSubject<ChatModel[]>([]);
+  private activeChat: BehaviorSubject<ChatModel> = new BehaviorSubject<ChatModel>(null);
+  public chats$ = this.chats.asObservable();
+  public activeChat$ = this.activeChat.asObservable();
 
   constructor() {
   }
 
-  public getChatRooms() {
-    this.chatRooms.next(mockRooms);
+  public getAllChats(): Observable<ChatModel[]> {
+    this.chats.next(mockChats);
+    return of(mockChats);
   }
 
-  public connectToRoom(roomId: number) {
-    this.activeChatRoomId.next(roomId);
-    return this.chatRooms$.pipe(
-      map(rooms => rooms.find(room => room.id === roomId))
-    ).subscribe(exactRoom => {
-      this.activeRoom.next(exactRoom);
+  public getChatMessages(chatId: number) {
+    return this.chats$.pipe(
+      map(chats => chats.find(chat => chat.id === chatId))
+    ).subscribe(chat => {
+      this.activeChat.next(chat);
     });
   }
 
-  public sendMessage(message: string): Observable<boolean> {
-    const newMessage: MessageModel = {
-      user: mockAuthUser,
+  public sendMessage(message: string, chatId: number): Observable<boolean> {
+    const newMessage: ChatMessageModel = {
+      userId: mockAuthUser.id,
       message,
     };
-    const currentRoomId = this.activeChatRoomId.getValue();
-    const rooms = this.chatRooms.getValue();
-    const activeRoom = rooms.filter(el => el.id === currentRoomId)[0];
-    activeRoom.messages = [...activeRoom.messages, newMessage];
 
-    this.activeRoom.next(activeRoom);
+    const chats = this.chats.getValue();
+    const activeChat = chats.filter(el => el.id === chatId)[0];
+    activeChat.messages = [...activeChat.messages, newMessage];
+
+    this.activeChat.next(activeChat);
     return of(true);
-  }
-
-  public createNewChatWithUser(userId: number, title?: string) {
-    if (userId === mockAuthUser.id || userId === this.connectedUserId) {
-      return;
-    }
-    this.connectedUserId = userId;
-
-    const newRoomId = Math.random();
-    const user = mockUsers.find(u => u.id === userId);
-    const newRoom: RoomModel = {
-      id: newRoomId,
-      title,
-      users: [user, mockAuthUser],
-      messages: []
-    };
-    const newRoomsData = [...this.chatRooms.getValue(), newRoom];
-    this.chatRooms.next(newRoomsData);
-    this.activeChatRoomId.next(newRoomId);
-    this.connectToRoom(newRoomId);
   }
 }

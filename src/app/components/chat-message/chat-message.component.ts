@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
-import {MessageModel} from '../../models/MessageModel';
+import {ChatMessageModel} from '../../models/ChatMessageModel';
 
 @Component({
   selector: 'app-chat-message',
@@ -9,7 +9,7 @@ import {MessageModel} from '../../models/MessageModel';
 })
 export class ChatMessageComponent implements OnInit {
   @Input()
-  public readonly messages: MessageModel[];
+  public readonly messages: ChatMessageModel[];
   @Input()
   public activeUserId: number;
 

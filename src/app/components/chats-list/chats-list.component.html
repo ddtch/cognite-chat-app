@@ -1,0 +1,7 @@
+<div class="chats-list">
+  <div class="chat" *ngFor="let chat of chats"
+       (click)="onChatSelected(chat.id)"
+       [class.active]="chat.id === selectedChatId">
+    {{chat.user.name}}
+  </div>
+</div>

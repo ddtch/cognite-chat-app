@@ -1,8 +1,8 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {ChatService} from '../../services/chat.service';
 import {BehaviorSubject} from 'rxjs';
-import {UserModel} from '../../models/UserModel';
-import {MessageModel} from '../../models/MessageModel';
+import {ChatModel} from '../../models/ChatModel';
+import {ChatMessageModel} from '../../models/ChatMessageModel';
 
 @Component({
   selector: 'app-chat',
@@ -10,31 +10,31 @@ import {MessageModel} from '../../models/MessageModel';
   styleUrls: ['./chat.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ChatComponent implements OnInit{
-  public activeChatRoomId = 1;
-  public users: BehaviorSubject<UserModel[]> = new BehaviorSubject<UserModel[]>(null);
-  public messages: BehaviorSubject<MessageModel[]> = new BehaviorSubject<MessageModel[]>(null);
+export class ChatComponent implements OnInit {
+  public selectedChatId = null;
+  public chats: BehaviorSubject<ChatModel[]> = new BehaviorSubject<ChatModel[]>([]);
+  public messages: BehaviorSubject<ChatMessageModel[]> = new BehaviorSubject<ChatMessageModel[]>(null);
 
-  constructor(private chatService: ChatService) { }
-
-  ngOnInit(): void {
-    this.chatService.getChatRooms();
-
-    this.chatService.connectToRoom(this.activeChatRoomId);
-
-    this.chatService.activeRoom$.subscribe(data => {
-      console.log(data);
-      this.users.next(data.users);
-      this.messages.next(data.messages);
-    });
+  constructor(private chatService: ChatService) {
   }
 
-  public onUserSelected(userId: number) {
-    this.chatService.createNewChatWithUser(userId);
+  ngOnInit(): void {
+    this.chatService.getAllChats()
+      .subscribe(chats => chats && this.chats.next(chats));
+    this.chatService.activeChat$
+      .subscribe(data => data && this.messages.next(data.messages));
+  }
+
+  public onChatSelected(chatId: number) {
+    if (this.selectedChatId === chatId) {
+      return;
+    }
+    this.selectedChatId = chatId;
+    this.chatService.getChatMessages(chatId);
   }
 
   public onMessageSent(message: string) {
-    this.chatService.sendMessage(message);
+    this.chatService.sendMessage(message, this.selectedChatId);
   }
 
 }

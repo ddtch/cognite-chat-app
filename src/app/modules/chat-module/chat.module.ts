@@ -1,19 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {ChatComponent} from '../../components/chat/chat.component';
-import {ChatUsersListComponent} from '../../components/chat-users-list/chat-users-list.component';
 import {ChatMessageFormComponent} from '../../components/chat-message-form/chat-message-form.component';
 import {ChatMessageComponent} from '../../components/chat-message/chat-message.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {ChatsListComponent} from '../../components/chats-list/chats-list.component';
 
 
 
 @NgModule({
   declarations: [
     ChatComponent,
-    ChatUsersListComponent,
     ChatMessageFormComponent,
-    ChatMessageComponent
+    ChatMessageComponent,
+    ChatsListComponent,
   ],
   imports: [
     CommonModule,
@@ -22,9 +22,9 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
   ],
   exports: [
     ChatComponent,
-    ChatUsersListComponent,
     ChatMessageFormComponent,
-    ChatMessageComponent
+    ChatMessageComponent,
+    ChatsListComponent,
   ]
 })
 export class ChatModule { }
